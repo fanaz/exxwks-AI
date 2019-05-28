@@ -63,7 +63,7 @@ function analyze() {
 		setProgressValue($("#third"), "Any Class", 0.01);
 	} else {
 		xhr.open("POST", `${loc.protocol}//${loc.hostname}:${loc.port}/analyze`, true);
-		xhr.timeout = 5000; // timeout in ms
+		xhr.timeout = 25000; // timeout in ms
 		xhr.onerror = function() {
 			hideLoading();
 			showAlert("Error sending request :-(");

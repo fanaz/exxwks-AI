@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 import uvicorn, aiohttp, asyncio
 from io import BytesIO
 from pathlib import Path
+import hashlib
 
 from fastai.vision import *
 
@@ -34,6 +35,12 @@ async def analyze(request):
     img_bytes = await (data['file'].read())
     img = open_image(BytesIO(img_bytes))
     prediction = learn.predict(img)
+    
+    filename = data['file'].filename
+    prediction_str = str(prediction[0])
+    with open('datasets/count_app/' + prediction_str + '/' + prediction_str + '_' + hashlib.md5(img_bytes).hexdigest() + '_' + filename, 'wb') as filehandle:  
+        filehandle.write(img_bytes)
+    
     return JSONResponse({
         'result': str(prediction[0]),
         'scores': sorted(zip(learn.data.classes, map(float, prediction[2])), key=lambda p: p[1], reverse=True)
